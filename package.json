@@ -1,0 +1,77 @@
+{
+  "name": "explodingemail",
+  "version": "1.0.0",
+  "description": "rewrite of https://exploding.email/",
+  "main": "dist/ExplodingEmail.js",
+  "scripts": {
+    "prestart": "npm run build",
+    "start": "node dist/ExplodingEmail.js",
+    "build": "eslint --fix src/ && tsc -b --verbose"
+  },
+  "keywords": ["temp-email", "email-server", "tempmail", "email", "exploding-email", "explodingemail", "server-software"],
+  "author": "Alexander Epolite <alexander@epolite.net>",
+  "dependencies": {
+    "mailparser": "^3.4.0",
+    "smtp-server": "^3.10.0",
+    "ws": "^8.5.0"
+  },
+  "devDependencies": {
+    "@types/mailparser": "^3.4.0",
+    "@types/node": "^17.0.24",
+    "@types/smtp-server": "^3.5.7",
+    "@types/ws": "^8.5.3",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "eslint": "^8.13.0"
+  },
+  "maintainers": [{
+    "email": "alexander@epolite.net",
+    "name": "Alexander Epolite"
+  }],
+  "contributors": [{
+    "email": "alexander@epolite.net",
+    "name": "Alexander Epolite"
+  }],
+  "typings": "dist/ExplodingEmail.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/explodingemail/ExplodingEmailServer.git"
+  },
+  "private": true,
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "indent": [
+        "error",
+        4
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "quotes": [
+        "error",
+        "double"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ]
+    }
+  }
+}
