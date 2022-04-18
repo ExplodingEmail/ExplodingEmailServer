@@ -15,6 +15,23 @@ export default class WebSocketServer {
     
     private emails_received = 0;
     
+    private terminate(op: number, error: string | undefined, ws: WebSocket, message: string | undefined = undefined): void {
+        if(!message) {
+            ws.send(JSON.stringify({
+                error: error,
+                terminated: true,
+                op: op,
+            }));
+        } else {
+            ws.send(JSON.stringify({
+                terminated: true,
+                op: op,
+                message: message,
+            }));
+        }
+        ws.terminate();
+    }
+    
     /**
      * Constructor for the WebSocket server.
      */
@@ -27,12 +44,7 @@ export default class WebSocketServer {
         
         this.wss.on("connection", (ws: WebSocket, req: IncomingMessage) => {
             if(!req.url) {
-                ws.send(JSON.stringify({
-                    error: "No URI specified.",
-                    terminated: true,
-                    op: OpCodes.INVALID_URI,
-                }));
-                return ws.terminate();
+                return this.terminate(OpCodes.INVALID_URI, "No URI specified", ws);
             }
             
             ws.send(JSON.stringify({
@@ -61,53 +73,28 @@ export default class WebSocketServer {
                 try {
                     const message = JSON.parse(data.toString());
                     if(!message.op) {
-                        ws.send(JSON.stringify({
-                            error: "No operation specified.",
-                            op: OpCodes.INVALID_OPCODE,
-                            terminated: true,
-                        }));
-                        return ws.terminate();
+                        return this.terminate(OpCodes.INVALID_OPCODE, "No operation specified.", ws);
                     }
                     
                     if(message.op === OpCodes.DELETE_INBOX) {
                         const token = message.token;
                         if(!token) {
-                            ws.send(JSON.stringify({
-                                error: "No token specified.",
-                                op: OpCodes.INVALID_TOKEN,
-                                terminated: true,
-                            }));
-                            return ws.terminate();
+                            return this.terminate(OpCodes.INVALID_TOKEN, "No token specified.", ws);
                         }
                         
                         const deleted_email = this.auth_storage.deleteEmail(token);
                         
                         if(!deleted_email) {
-                            ws.send(JSON.stringify({
-                                error: "Invalid token.",
-                                op: OpCodes.DELETE_FAILURE,
-                                terminated: true,
-                            }));
-                            return ws.terminate();
+                            return this.terminate(OpCodes.DELETE_FAILURE, "Invalid token.", ws);
                         }
                         
                         this.clients.delete(deleted_email);
                         
-                        ws.send(JSON.stringify({
-                            message: "Deleted.  Please re-connect.",
-                            op: OpCodes.DELETE_SUCCESS,
-                            terminated: true,
-                        }));
-                        return ws.terminate();
+                        return this.terminate(OpCodes.DELETE_SUCCESS, undefined, ws, "Deleted.  Please re-connect.");
                     }
                     
                 } catch(e) {
-                    ws.send(JSON.stringify({
-                        error: "Invalid JSON.",
-                        terminated: true,
-                        op: OpCodes.INVALID_JSON,
-                    }));
-                    return ws.terminate();
+                    return this.terminate(OpCodes.INVALID_JSON, "Invalid JSON.", ws);
                 }
             });
             
@@ -119,12 +106,7 @@ export default class WebSocketServer {
                 const new_email = this.auth_storage.generateNewEmail();
                 
                 if(!new_email[0] || !new_email[1]) {
-                    ws.send(JSON.stringify({
-                        error: "Failed to generate new email.",
-                        terminated: true,
-                        op: OpCodes.GENERATION_FAILURE,
-                    }));
-                    return ws.terminate();
+                    return this.terminate(OpCodes.GENERATION_FAILURE, "Failed to generate new email.", ws);
                 }
                 
                 //send email/token to client
@@ -144,12 +126,7 @@ export default class WebSocketServer {
                 
                 //expired/invalid token
                 if(!email) {
-                    ws.send(JSON.stringify({
-                        error: "Invalid token",
-                        terminated: true,
-                        op: OpCodes.INVALID_TOKEN
-                    }));
-                    return ws.terminate();
+                    return this.terminate(OpCodes.INVALID_TOKEN, "Invalid token.", ws);
                 }
                 
                 this.clients.set(email, ws);
@@ -159,12 +136,7 @@ export default class WebSocketServer {
                     op: OpCodes.RESUME_SUCCESS,
                 }));
             } else { //else, the url is invalid
-                ws.send(JSON.stringify({
-                    error: "Invalid URL",
-                    terminated: true,
-                    op: OpCodes.INVALID_URI,
-                }));
-                ws.terminate();
+                return this.terminate(OpCodes.INVALID_URI, "Invalid URL.", ws);
             }
             
         });
