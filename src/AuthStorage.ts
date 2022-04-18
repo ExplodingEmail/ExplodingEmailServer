@@ -1,6 +1,10 @@
 import Config from "./Config";
 import {randomBytes} from "crypto";
+import Inbox from "./entity/Inbox";
 
+/**
+ * Stores emails and tokens.
+ */
 export default class AuthStorage {
     
     private users: { [key: string]: string } = {};
@@ -11,9 +15,10 @@ export default class AuthStorage {
     
     /**
      * Generate a new email.
-     * @returns {string[]} [0] = email, [1] = session_id
+     * 
+     * @returns {Inbox}
      */
-    public generateNewEmail(): string[] {
+    public generateNewEmail(): Inbox {
         const addresses = Config.URIS;
         
         //pick a random address
@@ -28,7 +33,7 @@ export default class AuthStorage {
         //store the email and session id
         this.users[session_id] = email;
         
-        return [email, session_id];
+        return new Inbox(email, session_id);
     }
     
     /**

@@ -5,6 +5,9 @@ import Email from "./entity/Email";
 import Config from "./Config";
 import OpCodes from "./enum/OpCodes";
 
+/**
+ * Handles the WebSocket connections for gateway.exploding.email.
+ */
 export default class WebSocketServer {
     
     private wss: WebSocket.Server;
@@ -15,7 +18,16 @@ export default class WebSocketServer {
     
     private emails_received = 0;
     
-    private terminate(op: number, error: string | undefined, ws: WebSocket, message: string | undefined = undefined): void {
+    /**
+     * Terminate a WebSocket connection with an OpCode and reason.
+     * 
+     * @param op {number} OpCode to send.
+     * @param error {string | undefined} Reason for the termination.
+     * @param ws {WebSocket} WebSocket to terminate.
+     * @param message {string | undefined} non-error message to send.
+     * @private
+     */
+    private static terminate(op: number, error: string | undefined, ws: WebSocket, message: string | undefined = undefined): void {
         if(!message) {
             ws.send(JSON.stringify({
                 error: error,
@@ -44,7 +56,7 @@ export default class WebSocketServer {
         
         this.wss.on("connection", (ws: WebSocket, req: IncomingMessage) => {
             if(!req.url) {
-                return this.terminate(OpCodes.INVALID_URI, "No URI specified", ws);
+                return WebSocketServer.terminate(OpCodes.INVALID_URI, "No URI specified", ws);
             }
             
             ws.send(JSON.stringify({
@@ -73,28 +85,28 @@ export default class WebSocketServer {
                 try {
                     const message = JSON.parse(data.toString());
                     if(!message.op) {
-                        return this.terminate(OpCodes.INVALID_OPCODE, "No operation specified.", ws);
+                        return WebSocketServer.terminate(OpCodes.INVALID_OPCODE, "No operation specified.", ws);
                     }
                     
                     if(message.op === OpCodes.DELETE_INBOX) {
                         const token = message.token;
                         if(!token) {
-                            return this.terminate(OpCodes.INVALID_TOKEN, "No token specified.", ws);
+                            return WebSocketServer.terminate(OpCodes.INVALID_TOKEN, "No token specified.", ws);
                         }
                         
                         const deleted_email = this.auth_storage.deleteEmail(token);
                         
                         if(!deleted_email) {
-                            return this.terminate(OpCodes.DELETE_FAILURE, "Invalid token.", ws);
+                            return WebSocketServer.terminate(OpCodes.DELETE_FAILURE, "Invalid token.", ws);
                         }
                         
                         this.clients.delete(deleted_email);
                         
-                        return this.terminate(OpCodes.DELETE_SUCCESS, undefined, ws, "Deleted.  Please re-connect.");
+                        return WebSocketServer.terminate(OpCodes.DELETE_SUCCESS, undefined, ws, "Deleted.  Please re-connect.");
                     }
                     
                 } catch(e) {
-                    return this.terminate(OpCodes.INVALID_JSON, "Invalid JSON.", ws);
+                    return WebSocketServer.terminate(OpCodes.INVALID_JSON, "Invalid JSON.", ws);
                 }
             });
             
@@ -105,20 +117,16 @@ export default class WebSocketServer {
             if(url.startsWith("/generate")) { //generate a new email/token pair
                 const new_email = this.auth_storage.generateNewEmail();
                 
-                if(!new_email[0] || !new_email[1]) {
-                    return this.terminate(OpCodes.GENERATION_FAILURE, "Failed to generate new email.", ws);
-                }
-                
                 //send email/token to client
                 ws.send(JSON.stringify({
-                    email: new_email[0],
-                    token: new_email[1],
+                    email: new_email.address,
+                    token: new_email.token,
                     op: OpCodes.HERE_IS_YOUR_EMAIL_AND_TOKEN,
                 }));
                 
                 //add to clients
-                this.clients.set(new_email[0], ws);
-                this.experation.set(new_email[0], Date.now() + (Config.INBOX_EXPIRATION * 1000));
+                this.clients.set(new_email.address, ws);
+                this.experation.set(new_email.address, Date.now() + (Config.INBOX_EXPIRATION * 1000));
             } else if(url.startsWith("/auth/")) { //if the user already has an email and is resuming, authenticate here
                 const token = url.substring(6);
                 
@@ -126,7 +134,7 @@ export default class WebSocketServer {
                 
                 //expired/invalid token
                 if(!email) {
-                    return this.terminate(OpCodes.INVALID_TOKEN, "Invalid token.", ws);
+                    return WebSocketServer.terminate(OpCodes.INVALID_TOKEN, "Invalid token.", ws);
                 }
                 
                 this.clients.set(email, ws);
@@ -136,7 +144,7 @@ export default class WebSocketServer {
                     op: OpCodes.RESUME_SUCCESS,
                 }));
             } else { //else, the url is invalid
-                return this.terminate(OpCodes.INVALID_URI, "Invalid URL.", ws);
+                return WebSocketServer.terminate(OpCodes.INVALID_URI, "Invalid URL.", ws);
             }
             
         });
