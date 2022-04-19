@@ -4,6 +4,7 @@ import AuthStorage from "./AuthStorage";
 import Email from "./entity/Email";
 import Config from "./Config";
 import OpCodes from "./enum/OpCodes";
+import GetStats from "./db/GetStats";
 
 /**
  * Handles the WebSocket connections for gateway.exploding.email.
@@ -16,7 +17,7 @@ export default class WebSocketServer {
     private clients = new Map<string, WebSocket>();
     private experation = new Map<string, number>();
     
-    private emails_received = 0;
+    private stats: GetStats = new GetStats();
     
     /**
      * Terminate a WebSocket connection with an OpCode and reason.
@@ -59,19 +60,11 @@ export default class WebSocketServer {
                 return WebSocketServer.terminate(OpCodes.INVALID_URI, "No URI specified", ws);
             }
             
-            ws.send(JSON.stringify({
-                op: OpCodes.STATISTICS_REQUEST_RESPONSE,
-                statistics: {
-                    emails_received: this.emails_received,
-                    clients: this.clients.size,
-                },
-            }));
-            
-            const interval_id = setInterval(() => {
+            const interval_id = setInterval(async () => {
                 ws.send(JSON.stringify({
                     op: OpCodes.STATISTICS_REQUEST_RESPONSE,
                     statistics: {
-                        emails_received: this.emails_received,
+                        emails_received: await this.stats.getStats(),
                         clients: this.clients.size,
                     },
                 }));
@@ -159,7 +152,9 @@ export default class WebSocketServer {
      */
     public sendMessage(email: Email): boolean {
         const client = this.clients.get(email.to);
-        this.emails_received++;
+        this.stats.incrementStats().then(() => {
+            console.log(`Incremented stats.`);
+        });
         
         if(!client) {
             console.log("No client found for email: " + email.to);

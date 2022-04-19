@@ -8,10 +8,19 @@
     "start": "node dist/ExplodingEmail.js",
     "build": "eslint --fix src/ && tsc -b --verbose"
   },
-  "keywords": ["temp-email", "email-server", "tempmail", "email", "exploding-email", "explodingemail", "server-software"],
+  "keywords": [
+    "temp-email",
+    "email-server",
+    "tempmail",
+    "email",
+    "exploding-email",
+    "explodingemail",
+    "server-software"
+  ],
   "author": "Alexander Epolite <alexander@epolite.net>",
   "dependencies": {
     "mailparser": "^3.4.0",
+    "redis": "^4.0.6",
     "smtp-server": "^3.10.0",
     "ws": "^8.5.0"
   },
@@ -24,14 +33,18 @@
     "@typescript-eslint/parser": "^5.19.0",
     "eslint": "^8.13.0"
   },
-  "maintainers": [{
-    "email": "alexander@epolite.net",
-    "name": "Alexander Epolite"
-  }],
-  "contributors": [{
-    "email": "alexander@epolite.net",
-    "name": "Alexander Epolite"
-  }],
+  "maintainers": [
+    {
+      "email": "alexander@epolite.net",
+      "name": "Alexander Epolite"
+    }
+  ],
+  "contributors": [
+    {
+      "email": "alexander@epolite.net",
+      "name": "Alexander Epolite"
+    }
+  ],
   "typings": "dist/ExplodingEmail.d.ts",
   "repository": {
     "type": "git",
