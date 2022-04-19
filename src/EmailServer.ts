@@ -49,6 +49,7 @@ export default class EmailServer {
                     //create a new email and send it to the listener
                     const email = new Email(sender, rcpt, parsed.subject || "[no subject]", parsed.text || "[email has empty or invalid body]", Date.now(), session.remoteAddress);
                     listener(email);
+                    callback();
                 });
                 
             }
