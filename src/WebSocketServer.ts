@@ -15,7 +15,7 @@ export default class WebSocketServer {
     private auth_storage: AuthStorage;
     
     private clients = new Map<string, WebSocket>();
-    private experation = new Map<string, number>();
+    private expiration = new Map<string, number>();
     
     private stats: GetStats = new GetStats();
     
@@ -119,7 +119,7 @@ export default class WebSocketServer {
                 
                 //add to clients
                 this.clients.set(new_email.address, ws);
-                this.experation.set(new_email.address, Date.now() + (Config.INBOX_EXPIRATION * 1000));
+                this.expiration.set(new_email.address, Date.now() + (Config.INBOX_EXPIRATION * 1000));
             } else if(url.startsWith("/auth/")) { //if the user already has an email and is resuming, authenticate here
                 const token = url.substring(6);
                 
