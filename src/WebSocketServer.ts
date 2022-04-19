@@ -153,7 +153,7 @@ export default class WebSocketServer {
     public sendMessage(email: Email): boolean {
         const client = this.clients.get(email.to);
         this.stats.incrementStats().then(() => {
-            console.log(`Incremented stats.`);
+            console.log("Incremented stats.");
         });
         
         if(!client) {

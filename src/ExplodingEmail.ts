@@ -12,4 +12,5 @@ new EmailServer(Config.SMTP_PORT, ((email) => {
 }));
 
 new GetStats().getStats().then(() => {
+    console.log("Stats working");
 });
