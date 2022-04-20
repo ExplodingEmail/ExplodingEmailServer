@@ -5,8 +5,9 @@
   "main": "dist/ExplodingEmail.js",
   "scripts": {
     "prestart": "npm run build",
-    "start": "node dist/ExplodingEmail.js",
-    "build": "eslint --fix src/ && tsc -b --verbose"
+    "start": "npm run lint && npm run build && node dist/ExplodingEmail.js",
+    "lint": "eslint src/",
+    "build": "yarn && tsc -b --verbose"
   },
   "keywords": [
     "temp-email",
