@@ -1,6 +1,6 @@
 {
   "name": "explodingemail",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "rewrite of https://exploding.email/",
   "main": "dist/ExplodingEmail.js",
   "scripts": {
