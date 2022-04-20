@@ -42,7 +42,7 @@ export default class EmailServer {
                     const rcpt   = session.envelope.rcptTo.map(rcpt => rcpt.address)[0];
                     
                     //TODO: Check if sender is targeting multiple recipients
-                    console.debug(`there were ${session.envelope.rcptTo.length} recipients from ${sender}`);
+                    console.debug(`there were ${session.envelope.rcptTo.length} recipients from ${sender?.split("@")[1]}`);
                     
                     //if sender/rcpt are not set
                     if(!sender || !rcpt) {
