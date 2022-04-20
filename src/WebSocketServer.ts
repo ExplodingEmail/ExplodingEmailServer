@@ -1,10 +1,11 @@
 import WebSocket, {Server} from "ws";
-import {IncomingMessage} from "http";
+import {createServer, IncomingMessage, ServerResponse} from "http";
 import AuthStorage from "./AuthStorage";
 import Email from "./entity/Email";
 import Config from "./Config";
 import OpCodes from "./enum/OpCodes";
 import GetStats from "./db/GetStats";
+import {readFileSync} from "fs";
 
 /**
  * Handles the WebSocket connections for gateway.exploding.email.
@@ -49,8 +50,23 @@ export default class WebSocketServer {
      * Constructor for the WebSocket server.
      */
     public constructor() {
+        
+        const http_server = createServer((req: IncomingMessage, res: ServerResponse) => {
+            if(req.headers.host === "ttqp5vp3ylxrhpnfkehpzsslabaa7qxdur255jxgwmiisshv2wdntkid.onion") {
+                res.writeHead(200, {
+                    "Content-Type": "text/html",
+                });
+                res.end(readFileSync("minimal.html").toString());
+            } else {
+                res.writeHead(302, {
+                    "Location": "https://exploding.email",
+                });
+                res.end();
+            }
+        }).listen(Config.WS_PORT);
+        
         this.wss = new Server({
-            port: Config.WS_PORT,
+            server: http_server,
         });
         
         this.auth_storage = new AuthStorage();
