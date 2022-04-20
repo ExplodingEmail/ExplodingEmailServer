@@ -165,7 +165,7 @@ export default class WebSocketServer {
         
         //check for expired emails every 5 minutes
         setInterval(() => {
-            let client_count = this.clients.size;
+            const client_count = this.clients.size;
             const now = Date.now();
             
             for(const [email, expiration] of this.expiration) {

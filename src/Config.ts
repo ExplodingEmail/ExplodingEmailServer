@@ -1,4 +1,6 @@
 
+import {readFileSync} from "fs";
+
 export default class Config {
     
     //ports for smtp/ws
@@ -16,6 +18,7 @@ export default class Config {
     //response to send on 220 and 250
     public static readonly SERVER_NAME = "Some Assembly Required";
     
-    public static VERSION = require("../package.json").version;
+    //version
+    public static readonly VERSION = JSON.parse(readFileSync("./package.json").toString()).version;
     
 }
