@@ -107,6 +107,11 @@ export default class WebSocketServer {
             //if it is `/auth/<token>`, authenticate the client with the token
             const url = req.url;
             
+            ws.send(JSON.stringify({
+                op: OpCodes.VERSION,
+                version: Config.VERSION,
+            }));
+            
             if(url.startsWith("/generate")) { //generate a new email/token pair
                 const new_email = this.auth_storage.generateNewEmail();
                 
@@ -141,6 +146,20 @@ export default class WebSocketServer {
             }
             
         });
+        
+        //check for expired emails every 5 minutes
+        setInterval(() => {
+            let client_count = this.clients.size;
+            const now = Date.now();
+            
+            for(const [email, expiration] of this.expiration) {
+                if(expiration < now) {
+                    this.clients.delete(email);
+                    this.expiration.delete(email);
+                }
+            }
+            console.log(`${this.clients.size - client_count} expired inboxes were deleted.`);
+        }, 300000);
     }
     
     
@@ -152,12 +171,14 @@ export default class WebSocketServer {
      */
     public sendMessage(email: Email): boolean {
         const client = this.clients.get(email.to);
+        
+        //do stats before client checking because i like big numbers
         this.stats.incrementStats().then(() => {
             console.log("Incremented stats.");
         });
         
+        //expired/invalid email
         if(!client) {
-            console.log("No client found for email: " + email.to);
             return false;
         }
         

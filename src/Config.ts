@@ -16,4 +16,6 @@ export default class Config {
     //response to send on 220 and 250
     public static readonly SERVER_NAME = "Some Assembly Required";
     
+    public static VERSION = require("../package.json").version;
+    
 }
