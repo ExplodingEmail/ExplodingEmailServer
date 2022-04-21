@@ -13,6 +13,7 @@ export default class Email {
      * @param body {string} the body.
      * @param date {number} the date in unix millis.
      * @param ip {string} the ip address sending the email.
+     * @param html {string} the HTML data of the email.
      */
     public constructor(
         public readonly from: string,
@@ -21,5 +22,6 @@ export default class Email {
         public readonly body: string,
         public readonly date: number,
         public readonly ip: string,
+        public readonly html: string,
     ) {}
 }
