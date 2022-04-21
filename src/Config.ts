@@ -7,8 +7,8 @@ export default class Config {
     public static readonly SMTP_PORT = 2525;
     public static readonly WS_PORT = 8099;
     
-    //inbox expiration time in seconds (default: 3 days)
-    public static readonly INBOX_EXPIRATION = 259200;
+    //inbox expiration time in seconds (default: 3 hours)
+    public static readonly INBOX_EXPIRATION = 10800;
     
     public static readonly URIS = [
         "theeyeoftruth.com",
