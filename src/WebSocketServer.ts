@@ -129,18 +129,22 @@ export default class WebSocketServer {
             }));
             
             if(url.startsWith("/generate")) { //generate a new email/token pair
-                const new_email = this.auth_storage.generateNewEmail();
+                
+                const exp_date = Date.now() + (Config.INBOX_EXPIRATION * 1000);
+                
+                const new_email = this.auth_storage.generateNewEmail(exp_date);
                 
                 //send email/token to client
                 ws.send(JSON.stringify({
                     email: new_email.address,
                     token: new_email.token,
+                    expires: new_email.expiration,
                     op: OpCodes.HERE_IS_YOUR_EMAIL_AND_TOKEN,
                 }));
                 
                 //add to clients
                 this.clients.set(new_email.address, ws);
-                this.expiration.set(new_email.address, Date.now() + (Config.INBOX_EXPIRATION * 1000));
+                this.expiration.set(new_email.address, exp_date);
             } else if(url.startsWith("/auth/")) { //if the user already has an email and is resuming, authenticate here
                 const token = url.substring(6);
                 

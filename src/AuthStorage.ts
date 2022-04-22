@@ -16,9 +16,10 @@ export default class AuthStorage {
     /**
      * Generate a new email.
      * 
+     * @param {number} exp_date the expiration date of the email.
      * @returns {Inbox}
      */
-    public generateNewEmail(): Inbox {
+    public generateNewEmail(exp_date: number): Inbox {
         const addresses = Config.URIS;
         
         //pick a random address
@@ -33,7 +34,7 @@ export default class AuthStorage {
         //store the email and session id
         this.users[session_id] = email;
         
-        return new Inbox(email, session_id);
+        return new Inbox(email, session_id, exp_date);
     }
     
     /**
