@@ -188,7 +188,6 @@ export default class WebSocketServer {
     public sendMessage(email: Email): boolean {
         const client = this.clients.get(email.to);
         
-        //do stats before client checking because i like big numbers
         this.stats.incrementStats().then(() => {
             console.log("Incremented stats.");
         });

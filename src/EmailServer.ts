@@ -41,16 +41,13 @@ export default class EmailServer {
                     const sender = session.envelope.mailFrom ? session.envelope.mailFrom.address : undefined;
                     const rcpt   = session.envelope.rcptTo.map(rcpt => rcpt.address)[0];
                     
-                    //TODO: Check if sender is targeting multiple recipients
-                    console.debug(`there were ${session.envelope.rcptTo.length} recipients from ${sender?.split("@")[1]}`);
-                    
                     //if sender/rcpt are not set
                     if(!sender || !rcpt) {
                         return callback(new Error("Invalid envelope (nullish sender or rcpt)"));
                     }
                     
                     //create a new email and send it to the listener
-                    const email = new Email(sender, rcpt, parsed.subject || "[no subject]", parsed.text || "[email has empty or invalid body]", Date.now(), session.remoteAddress, parsed.html || "[email has empty or invalid HTML content]");
+                    const email = new Email(sender, rcpt, parsed.subject || "[no subject]", parsed.text || "[email has empty or invalid body]", Date.now(), session.remoteAddress, parsed.html || undefined);
                     listener(email);
                     callback();
                 });
