@@ -160,6 +160,7 @@ export default class WebSocketServer {
                 ws.send(JSON.stringify({
                     email: email,
                     op: OpCodes.RESUME_SUCCESS,
+                    expires: this.expiration.get(email),
                 }));
             } else { //else, the url is invalid
                 return WebSocketServer.terminate(OpCodes.INVALID_URI, "Invalid URL.", ws);
