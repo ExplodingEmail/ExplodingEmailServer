@@ -26,7 +26,7 @@ export default class AuthStorage {
         const address = addresses[Math.floor(Math.random() * addresses.length)];
         
         //generate a random email
-        const email = Math.random().toString(36).substring(2, 8) + Math.random().toString(10).substring(2, 8) + "@" + address;
+        const email = Math.random().toString(36).substring(2, 8) + String(Math.floor(Date.now() / 1000)).substring(2) + "@" + address;
         
         //generate a random session id
         const session_id = randomBytes(64).toString("base64url");
