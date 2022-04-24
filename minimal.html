@@ -75,10 +75,18 @@ if you can get it smaller without making it hard to maintain, make a pr
         }
     }
     
+    function validate_token(str) {
+        return !!str.match(/^[A-Za-z0-9-_]+$/);
+    }
+    
     function resume_session() {
         //refresh the page with /resume?token=<token>
         const token = document.getElementById("resume_token_enter").value;
         if(token.length > 0) {
+            if(!validate_token(token)) {
+                alert("invalid token");
+                return;
+            }
             window.location.href = `?token=${token}`;
         }
     }
