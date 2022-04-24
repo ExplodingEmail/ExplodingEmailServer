@@ -11,6 +11,10 @@
 <p>make sure you have javascript enabled</p>
 <p>refreshing will disconnect you from your inbox, save your resume token if you want to use it before it expires.</p>
 <br><br>
+<label for="resume_token_enter">Enter a resume token if you have one:</label>
+<input type="text" id="resume_token_enter" name="resume_token_enter" value="">
+<button onclick="resume_session()">Resume</button>
+<br><br>
 <p>your email:</p>
 <p id="email"></p>
 <p>resume token:</p>
@@ -22,7 +26,24 @@
 </div>
 </body>
 <script>
-    const ws = new WebSocket("ws://ttqp5vp3ylxrhpnfkehpzsslabaa7qxdur255jxgwmiisshv2wdntkid.onion/generate");
+    
+    let ws;
+    
+    let resume_token
+    
+    //if the url is /?token=<token> then get the resume token
+    if(window.location.search.length > 1) {
+        resume_token = window.location.search.substring(1);
+        resume_token = resume_token.split('=')[1];
+    }
+    
+    // const url = "ttqp5vp3ylxrhpnfkehpzsslabaa7qxdur255jxgwmiisshv2wdntkid.onion";
+    const url = "gateway.exploding.email";
+    if(resume_token) {
+        ws = new WebSocket(`ws://${url}/auth/${resume_token}`);
+    } else {
+        ws = new WebSocket(`ws://${url}/generate`);
+    }
     
     function esc(str) {
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
@@ -42,6 +63,19 @@
             div.appendChild(p);
             document.getElementById("emails").appendChild(div);
             document.getElementById("emails").appendChild(document.createElement("hr"));
+        } else if(json.op === 0) {
+            alert("invalid token");
+        } else if(json.op === 5) {
+            document.getElementById("email").innerText = json.email;
+            document.getElementById("resume_token").innerText = resume_token;
+        }
+    }
+    
+    function resume_session() {
+        //refresh the page with /resume?token=<token>
+        const token = document.getElementById("resume_token_enter").value;
+        if(token.length > 0) {
+            window.location.href = `?token=${token}`;
         }
     }
 </script>
