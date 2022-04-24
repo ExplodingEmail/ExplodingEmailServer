@@ -29,5 +29,4 @@ You can read the API docs [here](https://exploding.email/api.html).
 
 ## Discord
 
-Need help?  Feel free to join [the Discord server here](https://discord.gg/GHapeHPWVS) or by using the widget below.
-<iframe src="https://discord.com/widget?id=899020130091139082&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+Need help?  Feel free to join [the Discord server](https://discord.gg/GHapeHPWVS).
