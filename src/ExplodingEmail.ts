@@ -1,4 +1,4 @@
-#!
+#!/usr/bin/env node
 
 import EmailServer from "./srv/EmailServer";
 import WebSocketServer from "./srv/WebSocketServer";

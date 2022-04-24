@@ -57,6 +57,9 @@
     "node": ">=14.0.0"
   },
   "engineStrict": false,
+  "bin": {
+    "explodingemail": "./dist/ExplodingEmail.js"
+  },
   "eslintConfig": {
     "env": {
       "browser": true,
