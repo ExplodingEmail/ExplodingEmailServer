@@ -52,7 +52,11 @@
     "type": "git",
     "url": "https://github.com/explodingemail/ExplodingEmailServer.git"
   },
-  "private": true,
+  "private": false,
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "engineStrict": false,
   "eslintConfig": {
     "env": {
       "browser": true,
