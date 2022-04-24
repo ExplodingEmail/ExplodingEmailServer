@@ -17,4 +17,5 @@ export default class OpCodes {
     public static readonly DELETE_INBOX = 10;                //client -> server
     public static readonly INVALID_OPCODE = 11;              //server -> client
     public static readonly VERSION = 12;                     //server -> client
+    public static readonly INBOX_EXPIRED = 13;               //server -> client
 }

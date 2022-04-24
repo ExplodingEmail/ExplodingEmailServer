@@ -1,6 +1,6 @@
-import Config from "./Config";
+import Config from "../Config";
 import {randomBytes} from "crypto";
-import Inbox from "./entity/Inbox";
+import Inbox from "../entity/Inbox";
 
 /**
  * Stores emails and tokens.

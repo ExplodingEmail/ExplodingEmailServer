@@ -1,7 +1,7 @@
 #!
 
-import EmailServer from "./EmailServer";
-import WebSocketServer from "./WebSocketServer";
+import EmailServer from "./srv/EmailServer";
+import WebSocketServer from "./srv/WebSocketServer";
 import Config from "./Config";
 import GetStats from "./db/GetStats";
 
