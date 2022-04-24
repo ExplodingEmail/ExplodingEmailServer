@@ -25,7 +25,8 @@ export default class EmailServer {
             disabledCommands: ["AUTH", "STARTTLS"],
             onData(stream: SMTPServerDataStream, session: SMTPServerSession, callback: (err?: (Error | null)) => void) {
                 EmailServer.dataListener(stream, session, callback, listener);
-            }
+            },
+            
         });
         
         //listen
