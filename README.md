@@ -1,9 +1,18 @@
+<br>
+<div style="text-align: center">
+<img src="https://github.com/ExplodingEmail/ExplodingEmailServer/actions/workflows/codeql.yml/badge.svg">
+<img src="https://github.com/ExplodingEmail/ExplodingEmailServer/actions/workflows/dependency-review.yml/badge.svg">
+<img src="https://github.com/ExplodingEmail/ExplodingEmailServer/actions/workflows/eslint.yml/badge.svg">
+<img src="https://img.shields.io/discord/899020130091139082?color=5865F2&label=Discord&logo=discord&style=plastic">
+</div>
 
 # ExplodingEmail Server
+<hr>
 
-## A website which generates temporary email addresses!
+Generate temporary email addresses using this service!
 
-Server for [exploding.email](https://exploding.email).
+[View it here!](https://exploding.email)
+## How does it work?
 
 You can read the API docs [here](https://exploding.email/api.html).
 
