@@ -95,6 +95,8 @@ export default class WebSocketServer {
             
             this.resume(user, token);
             
+        } else if(url.startsWith("/custom/")) {
+            
         } else { //else, the url is invalid
             return user.terminate(OpCodes.INVALID_URI, "Invalid URL.");
         }
