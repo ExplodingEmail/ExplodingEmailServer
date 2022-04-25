@@ -16,7 +16,6 @@ export default class ValidateTextRecord {
         try {
             //check the TXT records of the domain to see if the `_exploding` record exists and has a sha512 hash of the key
             const records = await dns.promises.resolveTxt("exploding-email." + this.domain);
-            console.log(JSON.stringify(records));
             const record = records.find(record => record.includes(`${ValidateTextRecord.sha512(key)}`));
             return record !== undefined;
         } catch(e) {

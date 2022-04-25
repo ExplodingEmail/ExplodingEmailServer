@@ -211,8 +211,8 @@ export default class WebSocketServer {
         const email_domain = email.to.split("@")[1];
         
         let to = email.to;
-        
-        if(email_domain && domains.includes(email_domain)) {
+    
+        if(email_domain && !domains.includes(email_domain)) {
             to = "*@" + email_domain;
         }
         
