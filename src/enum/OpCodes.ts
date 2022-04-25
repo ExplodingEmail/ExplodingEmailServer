@@ -18,4 +18,5 @@ export default class OpCodes {
     public static readonly INVALID_OPCODE = 11;              //server -> client
     public static readonly VERSION = 12;                     //server -> client
     public static readonly INBOX_EXPIRED = 13;               //server -> client
+    public static readonly INVALID_KEY = 14;                 //server -> client
 }

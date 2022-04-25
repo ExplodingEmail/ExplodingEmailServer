@@ -8,6 +8,7 @@ import GetStats from "../db/GetStats";
 import User from "../entity/User";
 import Inbox from "../entity/Inbox";
 import HTTPServer from "./HTTPServer";
+import ValidateTextRecord from "../util/ValidateTextRecord";
 
 /**
  * Handles the WebSocket connections for gateway.exploding.email.
@@ -96,10 +97,46 @@ export default class WebSocketServer {
             this.resume(user, token);
             
         } else if(url.startsWith("/custom/")) {
+            //url: /custom/<key>/<domain>
+            const url_parts = url.split("/");
             
+            if(url_parts.length !== 4) {
+                return user.terminate(OpCodes.INVALID_URI, "Invalid URI");
+            }
+            
+            const key = url_parts[2];
+            const domain = url_parts[3];
+            
+            if(!key || !domain) {
+                return user.terminate(OpCodes.INVALID_URI, "Invalid URI");
+            }
+            
+            return this.customLoader(user, key, domain);
         } else { //else, the url is invalid
             return user.terminate(OpCodes.INVALID_URI, "Invalid URL.");
         }
+    }
+    
+    /**
+     * Custom domain handler
+     * @param user {User} The user.
+     * @param key {string} The key.
+     * @param domain {string} The domain.
+     * @private
+     */
+    private async customLoader(user: User, key: string, domain: string): Promise<void> {
+        const vtr = new ValidateTextRecord(domain);
+        
+        if(!await vtr.hasKey(key)) {
+            return user.terminate(OpCodes.INVALID_KEY, "Invalid key");
+        }
+        
+        const exp_date = Date.now() + (Config.INBOX_EXPIRATION * 1000);
+        
+        this.clients.set("*@" + domain, user);
+        this.expiration.set("*@" + domain, exp_date);
+        
+        user.newInbox("*@" + domain, "", exp_date);
     }
     
     /**
