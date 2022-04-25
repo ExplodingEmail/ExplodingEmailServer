@@ -205,11 +205,23 @@ export default class WebSocketServer {
      * @returns {boolean} true if the message was sent, false otherwise.
      */
     public sendMessage(email: Email): boolean {
-        const client = this.clients.get(email.to);
+        
+        const domains = Config.URIS;
+        
+        const email_domain = email.to.split("@")[1];
+        
+        let to = email.to;
+        
+        if(email_domain && domains.includes(email_domain)) {
+            to = "*@" + email_domain;
+        }
+        
+        const client = this.clients.get(to);
         
         this.stats.incrementStats().then(() => {
             console.log("Incremented stats.");
         });
+        
         
         //expired/invalid email
         if(!client) {
