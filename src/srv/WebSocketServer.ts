@@ -156,7 +156,7 @@ export default class WebSocketServer {
             }
         }
         
-        console.log(`${this.clients.size - client_count} expired inboxes were deleted.`);
+        console.log(`${client_count - this.clients.size} expired inboxes were deleted.`);
     }
     
     /**
