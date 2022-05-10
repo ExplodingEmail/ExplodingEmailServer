@@ -112,6 +112,9 @@ export default class WebSocketServer {
             }
             
             return this.customLoader(user, key, domain);
+        } else if(url === "/stats") {
+            //send the stats to the client,
+            //there is no need for code here
         } else { //else, the url is invalid
             return user.terminate(OpCodes.INVALID_URI, "Invalid URL.");
         }
