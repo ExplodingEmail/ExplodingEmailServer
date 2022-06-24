@@ -24,7 +24,11 @@ export default class EmailServer {
             size: 1048576, //1MB
             disabledCommands: ["AUTH", "STARTTLS"],
             onData(stream: SMTPServerDataStream, session: SMTPServerSession, callback: (err?: (Error | null)) => void) {
-                EmailServer.dataListener(stream, session, callback, listener);
+                try {
+                    EmailServer.dataListener(stream, session, callback, listener);
+                } catch(e) {
+                    console.error(e);
+                }
             },
             
         });
